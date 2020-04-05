@@ -17,7 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NumberPicker numpHours, numpMinutes;
-    private Button btnLog, btnShow;
+    private Button btnLog, btnShow, btnUpdate;
     private DatabaseHelper dbHelper;
 
     @Override
@@ -35,8 +35,23 @@ public class MainActivity extends AppCompatActivity {
     private void setupControls() {
         btnLog = (Button)findViewById(R.id.btnLog);
         btnShow = (Button)findViewById(R.id.btnShow);
+        btnUpdate = (Button)findViewById(R.id.btnUpdate);
         numpHours = (NumberPicker)findViewById(R.id.numHours);
         numpMinutes = (NumberPicker)findViewById(R.id.numMinutes);
+
+        btnShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showData();
+            }
+        });
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean updateSuccess = dbHelper.updateData(numpHours.getValue(), numpMinutes.getValue());
+            }
+        });
 
         numpHours.setMinValue(0);
         numpHours.setMaxValue(24);
@@ -55,18 +70,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void showData(View v) {
+    public void showData() {
         Cursor cursor = dbHelper.getAllData();
+
         if (cursor.getCount() == 0) {
-            //show message
+            showMessage("Error", "Nothing found");
             return;
         }
 
         StringBuffer buffer = new StringBuffer();
         while (cursor.moveToNext()) {
-            buffer.append("ID : " + cursor.getString(0) + "\n");
-            buffer.append("HOURS : " + cursor.getString(1) + "\n");
-            buffer.append("MINUTES : " + cursor.getString(2) + "\n");
+            buffer.append("HOURS : " + cursor.getString(0) + "\n");
+            buffer.append("MINUTES : " + cursor.getString(1) + "\n");
         }
 
         showMessage("Data", buffer.toString());

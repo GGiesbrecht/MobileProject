@@ -31,7 +31,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //)
     private static final String TABLE_CREATE =
         "CREATE TABLE " + TABLE_NAME + " (" +
-            COL_HOURS + " INTEGER NOT NULL, " +
+            COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COL_HOURS + " INTEGER, " +
             COL_MINUTES + " INTEGER);";
 
     //Drop table statement
@@ -59,8 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Insert values using content values
-    public boolean insertValues(int hours, int minutes)
-    {
+    public boolean insertValues(int hours, int minutes) {
         //get an instance of a writable database
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -83,6 +83,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else {
             return true;
         }
+    }
+
+    public boolean updateData(int id, int hours, int minutes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues insertValues = new ContentValues();
+        insertValues.put(COL_ID, id);
+        insertValues.put(COL_HOURS, hours);
+        insertValues.put(COL_MINUTES, minutes);
+
+        db.update(TABLE_NAME, insertValues, "id = ?", new String[] { String.valueOf(id) });
+        return true;
     }
 
     public void saveExec(String name, int age)
