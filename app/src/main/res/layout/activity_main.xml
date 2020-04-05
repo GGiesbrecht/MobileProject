@@ -3,73 +3,124 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/btnInput"
+    android:background="#e6e6e6"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fullbloom"
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/myToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#4cb7f5"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="72dp"
-        android:layout_height="wrap_content"
+    <TextView
+        android:id="@+id/tvHowManyHours"
+        android:layout_width="326dp"
+        android:layout_height="127dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="190dp"
-        android:layout_marginTop="144dp"
-        android:ems="10"
-        android:inputType="number" />
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="98dp"
+        android:text="How many hours did you work today?"
+        android:textAlignment="center"
+        android:textSize="36sp" />
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="75dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="216dp"
-        android:layout_marginEnd="134dp"
-        android:ems="10"
-        android:inputType="number" />
-
-    <TextView
-        android:id="@+id/tvHours"
-        android:layout_width="106dp"
-        android:layout_height="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="327dp"
+        android:layout_height="414dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="53dp"
-        android:layout_marginTop="145dp"
-        android:text="Hours"
-        android:textSize="30sp" />
+        android:layout_gravity="center"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="235dp"
+        app:cardCornerRadius="4dp">
 
-    <TextView
-        android:id="@+id/tvMinutes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="221dp"
-        android:text="Minutes"
-        android:textSize="30sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvHours"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="29dp"
+                android:text="Hours"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/btnLog"
+                android:layout_width="249dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="46dp"
+                android:layout_marginBottom="52dp"
+                android:background="@drawable/rounded_button"
+                android:elevation="5dp"
+                android:outlineProvider="bounds"
+                android:stateListAnimator="@null"
+                android:text="Log"
+                android:textColor="#ffffff"
+                android:textSize="30dp"
+                android:translationZ="1dp"
+                android:onClick="logTime"/>
+
+            <TextView
+                android:id="@+id/tvMinutes"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="170dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="42dp"
+                android:text="Minutes"
+                android:textAlignment="center"
+                android:textSize="30sp" />
+
+            <NumberPicker
+                android:id="@+id/numHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="91dp"
+                android:layout_marginEnd="191dp" />
+
+            <NumberPicker
+                android:id="@+id/numMinutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="193dp"
+                android:layout_marginTop="92dp" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/btnSend"
+        android:id="@+id/btnShow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="135dp"
-        android:layout_marginBottom="350dp"
-        android:text="Send to DB" />
+        android:text="Show Data"
+        android:layout_marginStart="79dp"
+        android:layout_marginBottom="21dp"
+        android:onClick="showData" />
+
+
 </RelativeLayout>

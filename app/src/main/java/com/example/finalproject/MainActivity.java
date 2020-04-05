@@ -1,69 +1,83 @@
 package com.example.finalproject;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 public class MainActivity extends AppCompatActivity {
-    Toolbar toolbar;
-    EditText etHours;
-    EditText etMinutes;
-    Button btnSend;
-    DatabaseReference dataReff;
+    private Toolbar toolbar;
+    private NumberPicker numpHours, numpMinutes;
+    private Button btnLog, btnShow;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
 
-        dataReff = FirebaseDatabase.getInstance().getReference();
+        dbHelper = new DatabaseHelper(this);
+        this.setupControls();
+    }
 
-        dataReff.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Day value = dataSnapshot.getValue(Day.class);
-                Toast.makeText(MainActivity.this, value.toString(), Toast.LENGTH_SHORT).show();
-            }
+    private void setupControls() {
+        btnLog = (Button)findViewById(R.id.btnLog);
+        btnShow = (Button)findViewById(R.id.btnShow);
+        numpHours = (NumberPicker)findViewById(R.id.numHours);
+        numpMinutes = (NumberPicker)findViewById(R.id.numMinutes);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+        numpHours.setMinValue(0);
+        numpHours.setMaxValue(24);
+        numpMinutes.setMinValue(0);
+        numpMinutes.setMaxValue(59);
+    }
 
-        etHours = findViewById(R.id.editText);
-        etMinutes = findViewById(R.id.editText2);
-        btnSend = findViewById(R.id.btnSend);
+    public void logTime(View v) {
+        int hours = numpHours.getValue();
+        int minutes = numpMinutes.getValue();
+        boolean isInserted = dbHelper.insertValues(hours, minutes);
+        if (isInserted) {
+            Toast.makeText(MainActivity.this, "Data inserted", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(MainActivity.this, "Data not inserted", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            int hours, minutes;
+    public void showData(View v) {
+        Cursor cursor = dbHelper.getAllData();
+        if (cursor.getCount() == 0) {
+            //show message
+            return;
+        }
 
-            @Override
-            public void onClick(View v) {
-                hours = Integer.parseInt(etHours.getText().toString().trim());
-                minutes = Integer.parseInt(etMinutes.getText().toString().trim());
+        StringBuffer buffer = new StringBuffer();
+        while (cursor.moveToNext()) {
+            buffer.append("ID : " + cursor.getString(0) + "\n");
+            buffer.append("HOURS : " + cursor.getString(1) + "\n");
+            buffer.append("MINUTES : " + cursor.getString(2) + "\n");
+        }
 
-                Day day = new Day(hours, minutes);
-                dataReff.child("days").setValue(day);
+        showMessage("Data", buffer.toString());
+    }
 
-            }
-        });
+    public void showMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
     }
 
     @Override
