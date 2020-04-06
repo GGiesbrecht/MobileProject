@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,13 +35,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupControls() {
-        btnLog = (Button)findViewById(R.id.btnLog);
-        btnShow = (Button)findViewById(R.id.btnShow);
-        btnUpdate = (Button)findViewById(R.id.btnUpdate);
-        btnDelete = (Button)findViewById(R.id.btnDelete);
-        numpHours = (NumberPicker)findViewById(R.id.numHours);
-        numpMinutes = (NumberPicker)findViewById(R.id.numMinutes);
-        etUpdate = (EditText)findViewById(R.id.etUpdate);
+        btnLog = (Button) findViewById(R.id.btnLog);
+        btnShow = (Button) findViewById(R.id.btnShow);
+        btnUpdate = (Button) findViewById(R.id.btnUpdate);
+        btnDelete = (Button) findViewById(R.id.btnDelete);
+        numpHours = (NumberPicker) findViewById(R.id.numHours);
+        numpMinutes = (NumberPicker) findViewById(R.id.numMinutes);
+        etUpdate = (EditText) findViewById(R.id.etUpdate);
 
         btnShow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,20 +82,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateData() {
-        boolean updateSuccess =
-            dbHelper.update(
-                Integer.parseInt(etUpdate.getText().toString()),
-                numpHours.getValue(),
-                numpMinutes.getValue());
-
-        if (updateSuccess) {
-            Toast.makeText(MainActivity.this, "Updated!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(MainActivity.this, "Nope", Toast.LENGTH_SHORT).show();
-        }
+        dbHelper.update(
+            Integer.parseInt(etUpdate.getText().toString()),
+            numpHours.getValue(),
+            numpMinutes.getValue());
     }
 
-     private void deleteData() {
+    private void deleteData() {
         dbHelper.delete(Integer.parseInt(etUpdate.getText().toString()));
     }
 
