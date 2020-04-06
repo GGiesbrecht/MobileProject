@@ -48,6 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // execute the create table code
+        db.execSQL(DROP_TABLE);
         db.execSQL(TABLE_CREATE);
     }
 
@@ -60,7 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Insert values using content values
-    public boolean insertValues(int hours, int minutes) {
+    public boolean insert(int hours, int minutes) {
         //get an instance of a writable database
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -75,25 +76,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //insert the values into the table
         long result = db.insert(TABLE_NAME, null, insertValues);
 
-        //close the database
-        db.close();
-
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        return result != -1;
     }
 
-    public boolean updateData(int id, int hours, int minutes) {
+    public boolean update(int id, int hours, int minutes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues insertValues = new ContentValues();
         insertValues.put(COL_ID, id);
         insertValues.put(COL_HOURS, hours);
         insertValues.put(COL_MINUTES, minutes);
 
-        db.update(TABLE_NAME, insertValues, "id = ?", new String[] { String.valueOf(id) });
+        db.update(TABLE_NAME, insertValues, "ID = ?", new String[] { String.valueOf(id) });
         return true;
+    }
+
+    public Integer delete(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NAME, "ID = ?", new String[] { String.valueOf(id) });
     }
 
     public void saveExec(String name, int age)
@@ -151,8 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-        return cursor;
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
     //This method is used to load the data from the table into a hash map

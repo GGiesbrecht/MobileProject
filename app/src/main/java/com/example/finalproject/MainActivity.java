@@ -4,11 +4,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
@@ -16,8 +18,9 @@ import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
+    EditText etUpdate;
     private NumberPicker numpHours, numpMinutes;
-    private Button btnLog, btnShow, btnUpdate;
+    private Button btnLog, btnShow, btnUpdate, btnDelete;
     private DatabaseHelper dbHelper;
 
     @Override
@@ -36,8 +39,10 @@ public class MainActivity extends AppCompatActivity {
         btnLog = (Button)findViewById(R.id.btnLog);
         btnShow = (Button)findViewById(R.id.btnShow);
         btnUpdate = (Button)findViewById(R.id.btnUpdate);
+        btnDelete = (Button)findViewById(R.id.btnDelete);
         numpHours = (NumberPicker)findViewById(R.id.numHours);
         numpMinutes = (NumberPicker)findViewById(R.id.numMinutes);
+        etUpdate = (EditText)findViewById(R.id.etUpdate);
 
         btnShow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +54,14 @@ public class MainActivity extends AppCompatActivity {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean updateSuccess = dbHelper.updateData(numpHours.getValue(), numpMinutes.getValue());
+                updateData();
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteData();
             }
         });
 
@@ -62,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     public void logTime(View v) {
         int hours = numpHours.getValue();
         int minutes = numpMinutes.getValue();
-        boolean isInserted = dbHelper.insertValues(hours, minutes);
+        boolean isInserted = dbHelper.insert(hours, minutes);
         if (isInserted) {
             Toast.makeText(MainActivity.this, "Data inserted", Toast.LENGTH_SHORT).show();
         } else {
@@ -70,7 +82,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void showData() {
+    private void updateData() {
+        boolean updateSuccess =
+            dbHelper.update(
+                Integer.parseInt(etUpdate.getText().toString()),
+                numpHours.getValue(),
+                numpMinutes.getValue());
+
+        if (updateSuccess) {
+            Toast.makeText(MainActivity.this, "Updated!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(MainActivity.this, "Nope", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+     private void deleteData() {
+        dbHelper.delete(Integer.parseInt(etUpdate.getText().toString()));
+    }
+
+    private void showData() {
         Cursor cursor = dbHelper.getAllData();
 
         if (cursor.getCount() == 0) {
@@ -80,8 +110,9 @@ public class MainActivity extends AppCompatActivity {
 
         StringBuffer buffer = new StringBuffer();
         while (cursor.moveToNext()) {
-            buffer.append("HOURS : " + cursor.getString(0) + "\n");
-            buffer.append("MINUTES : " + cursor.getString(1) + "\n");
+            buffer.append("ID: " + cursor.getString(0) + "\n");
+            buffer.append("HOURS: " + cursor.getString(1) + "\n");
+            buffer.append("MINUTES: " + cursor.getString(2) + "\n");
         }
 
         showMessage("Data", buffer.toString());
