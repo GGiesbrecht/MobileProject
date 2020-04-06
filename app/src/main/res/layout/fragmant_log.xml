@@ -7,43 +7,78 @@
 
     <TextView
         android:id="@+id/tvHowManyHours"
-        android:layout_width="326dp"
-        android:layout_height="127dp"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="34dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="40dp"
         android:text="How many hours did you work today?"
         android:textAlignment="center"
         android:textSize="36sp" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
-        android:layout_width="327dp"
-        android:layout_height="414dp"
+        android:layout_width="326dp"
+        android:layout_height="336dp"
         android:layout_below="@+id/tvHowManyHours"
         android:layout_alignParentStart="true"
         android:layout_gravity="center"
-        android:layout_marginStart="31dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="60dp"
         app:cardCornerRadius="6dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tvHours"
-                android:layout_width="106dp"
-                android:layout_height="wrap_content"
+            <Spinner
+                android:id="@+id/spMinutes"
+                style="@style/spinner_style"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="45dp"
-                android:layout_marginTop="29dp"
+                android:layout_marginStart="167dp"
+                android:layout_marginTop="91dp" />
+
+            <TextView
+                android:id="@+id/tvHours"
+                android:layout_width="115dp"
+                android:layout_height="52dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="38dp"
+                android:layout_marginTop="35dp"
                 android:text="Hours"
                 android:textAlignment="center"
                 android:textAllCaps="false"
+                android:textSize="30sp" />
+
+            <Spinner
+                android:id="@+id/spHours"
+                style="@style/spinner_style"
+                android:layout_width="100dp"
+                android:layout_height="150dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="91dp" />
+
+            <TextView
+                android:id="@+id/tvMinutes"
+                android:layout_width="115dp"
+                android:layout_height="52dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="171dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginEnd="43dp"
+                android:text="Minutes"
+                android:textAlignment="center"
                 android:textSize="30sp" />
 
             <Button
@@ -52,8 +87,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="46dp"
-                android:layout_marginBottom="52dp"
+                android:layout_marginStart="41dp"
+                android:layout_marginBottom="30dp"
                 android:background="@drawable/rounded_button"
                 android:elevation="5dp"
                 android:onClick="logTime"
@@ -63,38 +98,6 @@
                 android:textColor="#ffffff"
                 android:textSize="30dp"
                 android:translationZ="1dp" />
-
-            <TextView
-                android:id="@+id/tvMinutes"
-                android:layout_width="115dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="170dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="42dp"
-                android:text="Minutes"
-                android:textAlignment="center"
-                android:textSize="30sp" />
-
-            <NumberPicker
-                android:id="@+id/numHours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="91dp"
-                android:layout_marginEnd="191dp" />
-
-            <NumberPicker
-                android:id="@+id/numMinutes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="193dp"
-                android:layout_marginTop="92dp" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
