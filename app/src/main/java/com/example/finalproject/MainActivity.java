@@ -1,5 +1,6 @@
 package com.example.finalproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +8,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,12 +16,16 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     EditText etUpdate;
     private NumberPicker numpHours, numpMinutes;
     private Button btnLog, btnShow, btnUpdate, btnDelete;
+    BottomNavigationView bottomNav;
     private DatabaseHelper dbHelper;
 
     @Override
@@ -42,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         numpHours = (NumberPicker) findViewById(R.id.numHours);
         numpMinutes = (NumberPicker) findViewById(R.id.numMinutes);
         etUpdate = (EditText) findViewById(R.id.etUpdate);
+        bottomNav = (BottomNavigationView) findViewById(R.id.bottomNav);
 
         btnShow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,18 +56,37 @@ public class MainActivity extends AppCompatActivity {
                 showData();
             }
         });
-
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateData();
             }
         });
-
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteData();
+            }
+        });
+
+        bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+
+                switch (item.getItemId()) {
+                    case R.id.nav_log:
+                        selectedFragment = new LogFragment();
+                        break;
+                    case R.id.nav_graph:
+                        selectedFragment = new GraphFragment();
+                        break;
+                }
+
+                getSupportFragmentManager().beginTransaction().replace(
+                    R.id.fragmentContainer, selectedFragment).commit();
+
+                return true;
             }
         });
 
