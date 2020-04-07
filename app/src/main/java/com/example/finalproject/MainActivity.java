@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -47,23 +48,35 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
-
                 switch (item.getItemId()) {
                     case R.id.nav_log:
-                        selectedFragment = new LogFragment();
+                        setFragmentLog();
                         break;
                     case R.id.nav_graph:
-                        selectedFragment = new GraphFragment();
+                        setFragmentGraph();
                         break;
                 }
-
-                getSupportFragmentManager().beginTransaction().replace(
-                    R.id.fragmentContainer, selectedFragment).commit();
-
                 return true;
             }
         });
+    }
+
+    private void setFragmentLog() {
+        getSupportFragmentManager()
+            .beginTransaction()
+            .setCustomAnimations(R.anim.enter_left_to_right, R.anim.exit_right_to_left)
+            .replace(R.id.fragmentContainer, new LogFragment())
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit();
+    }
+
+    private void setFragmentGraph() {
+        getSupportFragmentManager()
+            .beginTransaction()
+            .setCustomAnimations(R.anim.enter_right_to_left, R.anim.exit_left_to_right)
+            .replace(R.id.fragmentContainer, new GraphFragment())
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit();
     }
 
     public void logTime(int hours, int minutes) {
