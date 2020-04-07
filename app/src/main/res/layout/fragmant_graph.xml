@@ -12,7 +12,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="50dp"
         android:layout_marginTop="199dp"
-        android:text="Graph fragmant"
+        android:text="This is where the graph will be"
+        android:textAlignment="center"
         android:textSize="30sp" />
 
 </RelativeLayout>
