@@ -2,9 +2,12 @@ package com.example.finalproject;
 
 import androidx.annotation.NonNull;
 
+import java.time.LocalTime;
+
 public class Day {
     private int hours;
     private int minutes;
+//    private LocalTime day
 
     public Day() {
     }

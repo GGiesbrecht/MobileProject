@@ -76,7 +76,7 @@ public class LogFragment extends Fragment {
         showMessage("Data", buffer.toString());
     }
 
-    public void showMessage(String title, String message) {
+    private void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(true);
         builder.setTitle(title);

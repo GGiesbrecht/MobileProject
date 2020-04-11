@@ -17,14 +17,17 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements LogFragment.LogFragmentListener {
-    private Toolbar toolbar;
+    Toolbar toolbar;
     BottomNavigationView bottomNav;
-    private DatabaseHelper dbHelper;
+    DatabaseHelper dbHelper;
+    Boolean curFragIsLog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        curFragIsLog = true;
 
         toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
@@ -49,10 +52,16 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_log:
-                        setFragmentLog();
+                        if (!curFragIsLog) {
+                            setFragmentLog();
+                            curFragIsLog = true;
+                        }
                         break;
                     case R.id.nav_graph:
-                        setFragmentGraph();
+                        if (curFragIsLog) {
+                            setFragmentGraph();
+                            curFragIsLog = false;
+                        }
                         break;
                 }
                 return true;
