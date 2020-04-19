@@ -39,9 +39,21 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
             .replace(R.id.fragmentContainer, new LogFragment()).commit();
     }
 
+
     @Override
     public void sendToActivity(int hours, int minutes) {
-        logTime(hours, minutes);
+        int timeInMinutes = (hours * 60) + minutes;
+
+        logTime(timeInMinutes);
+    }
+
+    public void logTime(int timeInMinutes) {
+        boolean isInserted = dbHelper.insert(timeInMinutes, System.currentTimeMillis());
+
+        Toast.makeText(MainActivity.this, isInserted
+                ? "Data inserted"
+                : "Data not inserted",
+            Toast.LENGTH_SHORT).show();
     }
 
     private void setupBottomNav() {
@@ -87,17 +99,8 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
             .commit();
     }
 
-    public void logTime(int hours, int minutes) {
-        boolean isInserted = dbHelper.insert(hours, minutes);
-        if (isInserted) {
-            Toast.makeText(MainActivity.this, "Data inserted", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(MainActivity.this, "Data not inserted", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void showData() {
-        Cursor cursor = dbHelper.getAllData();
+        Cursor cursor = dbHelper.getWeekData();
 
         if (cursor.getCount() == 0) {
             showMessage("Error", "Nothing found");
@@ -107,8 +110,9 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
         StringBuffer buffer = new StringBuffer();
         while (cursor.moveToNext()) {
             buffer.append("ID: " + cursor.getString(0) + "\n");
-            buffer.append("HOURS: " + cursor.getString(1) + "\n");
-            buffer.append("MINUTES: " + cursor.getString(2) + "\n");
+            buffer.append("Hours: " + cursor.getString(1) + "\n");
+            buffer.append("Minutes: " + cursor.getString(2) + "\n");
+            buffer.append("Date: " + cursor.getString(3) + "\n");
         }
 
         showMessage("Data", buffer.toString());

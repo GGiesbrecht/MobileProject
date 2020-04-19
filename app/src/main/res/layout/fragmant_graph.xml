@@ -13,60 +13,71 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="173dp"
         android:layout_marginTop="22dp"
-        android:text="2016"
         android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="185dp"
+        android:id="@+id/tvWeek"
+        android:layout_width="92dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="118dp"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tvMonth"
+        android:layout_width="132dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="121dp"
-        android:layout_marginTop="65dp"
-        android:text="April 29 - 04"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="64dp"
+        android:text=""
+        android:textAlignment="textEnd"
         android:textSize="30sp" />
 
     <WebView
         android:id="@+id/wvChart"
         android:layout_width="match_parent"
-        android:layout_height="412dp"
+        android:layout_height="402dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginTop="120dp" />
 
 
-    <Button
-        android:id="@+id/btnLeft"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="70dp"
-        android:layout_marginBottom="33dp"
-        android:background="@drawable/rounded_button_white"
-        android:text="previous"
-        android:textColor="#4cb7f5"
-        app:icon="@drawable/ic_chevron_left_blue_24dp"
-        app:iconGravity="start" />
+<!--    <Button-->
+<!--        android:id="@+id/btnLeft"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginStart="70dp"-->
+<!--        android:layout_marginBottom="33dp"-->
+<!--        android:background="@drawable/rounded_button_white"-->
+<!--        android:text="previous"-->
+<!--        android:textColor="#4cb7f5"-->
+<!--        app:icon="@drawable/ic_chevron_left_blue_24dp"-->
+<!--        app:iconGravity="start" />-->
 
-    <Button
-        android:id="@+id/btnRight"
-        android:layout_width="102dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="242dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginBottom="33dp"
-        android:background="@drawable/rounded_button_white"
-        android:text="Next"
-        android:textColor="#4cb7f5"
-        app:iconGravity="start" />
+<!--    <Button-->
+<!--        android:id="@+id/btnRight"-->
+<!--        android:layout_width="102dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginStart="242dp"-->
+<!--        android:layout_marginEnd="70dp"-->
+<!--        android:layout_marginBottom="33dp"-->
+<!--        android:background="@drawable/rounded_button_white"-->
+<!--        android:text="Next"-->
+<!--        android:textColor="#4cb7f5"-->
+<!--        app:iconGravity="start" />-->
 
 
 </RelativeLayout>

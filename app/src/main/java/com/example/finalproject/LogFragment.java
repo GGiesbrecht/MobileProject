@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -15,11 +16,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class LogFragment extends Fragment {
     private LogFragmentListener listener;
-    private Spinner spHours, spMinutes;
+    private Spinner spHours, spMinutes, spGoal;
     private Button btnLog, btnShow;
     private DatabaseHelper dbHelper;
 
@@ -33,9 +38,10 @@ public class LogFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragmant_log, container, false);
 
         btnShow = (Button) v.findViewById(R.id.btnShow);
-        btnLog = (Button) v.findViewById(R.id.btnLog);
+        btnLog = (Button) v.findViewById(R.id.btnLogHours);
         spHours = (Spinner) v.findViewById(R.id.spHours);
         spMinutes = (Spinner) v.findViewById(R.id.spMinutes);
+        spGoal = (Spinner) v.findViewById(R.id.spGoal);
 
         setupSpinners(v);
 
@@ -59,7 +65,7 @@ public class LogFragment extends Fragment {
     }
 
     private void showData() {
-        Cursor cursor = dbHelper.getAllData();
+        Cursor cursor = dbHelper.getWeekData();
 
         if (cursor.getCount() == 0) {
             showMessage("Error", "Nothing found");
@@ -69,8 +75,18 @@ public class LogFragment extends Fragment {
         StringBuffer buffer = new StringBuffer();
         while (cursor.moveToNext()) {
             buffer.append("ID: " + cursor.getString(0) + "\n");
-            buffer.append("HOURS: " + cursor.getString(1) + "\n");
-            buffer.append("MINUTES: " + cursor.getString(2) + "\n");
+            buffer.append("Time in Minutes: " + cursor.getString(1) + "\n");
+
+            String stringDate = cursor.getString(2);
+//            int intDate = Integer.parseInt(stringDate);
+            DateFormat format = DateFormat.getDateInstance();
+
+            Date date = new Date();
+            try {
+                date = format.parse(stringDate);
+            } catch (Exception ignored) {}
+
+            buffer.append("Date: " + date + "\n");
         }
 
         showMessage("Data", buffer.toString());
@@ -104,7 +120,18 @@ public class LogFragment extends Fragment {
         minutesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spHours.setAdapter(hoursAdapter);
+        spGoal.setAdapter(hoursAdapter);
         spMinutes.setAdapter(minutesAdapter);
+
+        spGoal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
     }
 
     @Override

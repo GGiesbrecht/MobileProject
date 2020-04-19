@@ -14,29 +14,68 @@ import java.util.Map;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    //Define your database name
+    // DB name
     private static final String DB_NAME="productivity_tracker.db";
-    private static final String TABLE_NAME="day_table";
-
-    //Create constants defining your column names
-    private static final String COL_ID="ID";
-    private static final String COL_HOURS="HOURS";
-    private static final String COL_MINUTES="MINUTES";
-    //Define the database version
     private static final int DB_VERSION = 2;
 
-    //Define your create statement in typical sql format
-    //CREATE TABLE {Tablename} (
-    //Colname coltype
-    //)
-    private static final String TABLE_CREATE =
-        "CREATE TABLE " + TABLE_NAME + " (" +
-            COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COL_HOURS + " INTEGER, " +
-            COL_MINUTES + " INTEGER);";
+    // Table definitions
+    private static final String DAY = "day";
+    private static final String WEEK = "week";
+    private static final String YEAR = "year";
 
-    //Drop table statement
-    private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    // Columns
+    private static final String ID="id";
+    private static final String HOURS = "hours";
+    private static final String MINUTES = "minutes";
+    private static final String DAY_OF_WEEK = "day_of_week";
+    private static final String WEEK_ID = "week_id";
+    private static final String START_DATE = "start_date";
+    private static final String END_DATE = "end_date";
+    private static final String REACHED = "reached";
+
+
+    private static final String DATE = "date";
+
+
+    // Create table DAY
+    private static final String CREATE_DAYS =
+        "CREATE TABLE " + DAY + " (" +
+            ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            MINUTES + " INTEGER, " +
+            DATE + " INTEGER, " +
+            "goalId INTEGER, " +
+            "FOREIGN KEY(goalId) REFERENCES goal(id)" +
+        ");";
+
+    private static final String CREATE_GOALS =
+        "CREATE TABLE goal (" +
+            ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            MINUTES + " INTEGER, " +
+            REACHED + " BOOLEAN, " +
+            "dayId INTEGER, " +
+            "FOREIGN KEY(dayId) REFERENCES day(id)" +
+            ");";
+
+
+    // Create table WEEK
+//    private static final String CREATE_WEEKS =
+//        "CREATE TABLE " + WEEK + " (" +
+//            ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+//            YEAR + " INTEGER, " +
+//            START_DATE + " INTEGER, " +
+//            END_DATE + " INTEGER" +
+//            ");";
+
+//    private static final String CREATE_YEARS =
+//        "CREATE TABLE " + YEAR + " (" +
+//            ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+//            YEAR + "INTEGER " +
+//            ");";
+
+    //Drop table statements
+    private static final String DROP_DAYS = "DROP TABLE IF EXISTS " + DAY;
+    private static final String DROP_YEARS = "DROP TABLE IF EXISTS " + YEAR;
+    private static final String DROP_WEEKS = "DROP TABLE IF EXISTS " + WEEK;
 
     //constructor
     public DatabaseHelper(Context context) {
@@ -47,67 +86,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //when you create the class, create the table
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // execute the create table code
-        db.execSQL(DROP_TABLE);
-        db.execSQL(TABLE_CREATE);
+        db.execSQL(DROP_DAYS);
+        db.execSQL(DROP_WEEKS);
+//        db.execSQL(DROP_YEARS);
+//        db.execSQL(DROP_MONTHS);
+
+        db.execSQL(CREATE_DAYS);
+        db.execSQL(CREATE_GOALS);
+//        db.execSQL(CREATE_WEEKS);
+//        db.execSQL(CREATE_YEARS);
+//        db.execSQL(CREATE_TABLE_MONTHS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         //drop the table and recreate it
-        db.execSQL(DROP_TABLE);
         onCreate(db);
     }
 
     //Insert values using content values
-    public boolean insert(int hours, int minutes) {
-        //get an instance of a writable database
+    public boolean insert(int timeInMinutes, long dateTime) {
         SQLiteDatabase db = this.getWritableDatabase();
-
-        //create an instance of ContentValues to add to the database
-        //the ContentValues class is used to store sets of values that
-        //are easier to process
         ContentValues insertValues = new ContentValues();
-        //Add values to the ContentValues:
-        //insertValues.put(ColumnName, value);
-        insertValues.put(COL_HOURS, hours);
-        insertValues.put(COL_MINUTES, minutes);
-        //insert the values into the table
-        long result = db.insert(TABLE_NAME, null, insertValues);
 
+        insertValues.put(MINUTES_WORKED, timeInMinutes);
+        insertValues.put(DATE, dateTime);
+
+        long result = db.insert(DAY, null, insertValues);
         return result != -1;
     }
 
     public boolean update(int id, int hours, int minutes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues insertValues = new ContentValues();
-        insertValues.put(COL_ID, id);
-        insertValues.put(COL_HOURS, hours);
-        insertValues.put(COL_MINUTES, minutes);
+        insertValues.put(ID, id);
+        insertValues.put(HOURS, hours);
+        insertValues.put(MINUTES, minutes);
 
-        db.update(TABLE_NAME, insertValues, "ID = ?", new String[] { String.valueOf(id) });
+        db.update(DAY, insertValues, "ID = ?", new String[] { String.valueOf(id) });
         return true;
     }
 
     public Integer delete(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, "ID = ?", new String[] { String.valueOf(id) });
+        return db.delete(DAY, "ID = ?", new String[] { String.valueOf(id) });
     }
 
     public void saveExec(String name, int age)
     {
-        //Open your writable database
+        String insertStatement = "INSERT INTO 'People' VALUES('" + name +"'," + age + ");";
         SQLiteDatabase db = this.getWritableDatabase();
 
-        //Formulate your statement
-        String insertStatement = "INSERT INTO 'People' VALUES('" + name +"'," + age + ");";
-
-        //Execute your statement
         db.execSQL(insertStatement);
-
         db.close();
-
     }
 
     //Load the data in the table
@@ -117,9 +149,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //open the readable database
         SQLiteDatabase db = this.getReadableDatabase();
         //create an array of the table names
-        String[] selection = {COL_HOURS, COL_MINUTES};
+        String[] selection = {HOURS, MINUTES};
         //Create a cursor item for querying the database
-        Cursor c = db.query(TABLE_NAME,	//The name of the table to query
+        Cursor c = db.query(DAY,	//The name of the table to query
             selection,				//The columns to return
             null,					//The columns for the where clause
             null,					//The values for the where clause
@@ -148,13 +180,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return nameData;
     }
 
-    public Cursor getAllData() {
+    public Cursor getWeekData() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        return db.rawQuery(
+            "SELECT * FROM " + DAY, null);
     }
 
-    //This method is used to load the data from the table into a hash map
-    //this enables the use of multiple textviews in the listview
+    //This method is used to load the data from a table into a hash map
     public List<Map<String,String>> loadData2()
     {
         List<Map<String,String>> lm = new ArrayList<Map<String,String>>();
@@ -162,9 +194,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //open the readable database
         SQLiteDatabase db = this.getReadableDatabase();
         //create an array of the table names
-        String[] selection = {COL_HOURS, COL_MINUTES};
+        String[] selection = {HOURS, MINUTES};
         //Create a cursor item for querying the database
-        Cursor c = db.query(TABLE_NAME,	//The name of the table to query
+        Cursor c = db.query(DAY,	//The name of the table to query
             selection,				//The columns to return
             null,					//The columns for the where clause
             null,					//The values for the where clause
