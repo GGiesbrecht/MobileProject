@@ -31,7 +31,7 @@ public class LogFragment extends Fragment {
 
     public interface LogFragmentListener {
         void sendHoursToActivity(int hours, int minutes);
-        void sendGoalToActivity(int goalHours);
+//        void sendGoalToActivity(int goalHours);
     }
 
     @Nullable
@@ -81,38 +81,40 @@ public class LogFragment extends Fragment {
     }
 
     private void showData() {
-        Cursor cursor = dbHelper.getWeekData();
+        Cursor dayCursor = dbHelper.getDayData();
+        Cursor goalCursor = dbHelper.getGoalData();
 
-        if (cursor.getCount() == 0) {
+        if (dayCursor.getCount() == 0 && goalCursor.getCount() == 0) {
             showMessage("Error", "Nothing found");
             return;
         }
 
         StringBuffer buffer = new StringBuffer();
-        while (cursor.moveToNext()) {
-            String stringDate = cursor.getString(2);
-            Date date = stringToDate(stringDate);
 
-            buffer.append("ID: " + cursor.getString(0) + "\n");
-            buffer.append("Time in Minutes: " + cursor.getString(1) + "\n");
+        while (dayCursor.moveToNext()) {
+            String stringDate = dayCursor.getString(2);
+            Date date = dbHelper.stringToDate(stringDate);
+            String dayId = dayCursor.getString(0);
+            String minutes = dayCursor.getString(1);
+
+            buffer.append("Day ID: " + dayId + "\n");
+            buffer.append("Time in Minutes: " + minutes + "\n");
             buffer.append("Date: " + date + "\n");
+        }
+
+        while (goalCursor.moveToNext()) {
+            String goalId = goalCursor.getString(0);
+            String goalMinutes = goalCursor.getString(1);
+            String goalReached = goalCursor.getString(2);
+
+            buffer.append("Goal ID: " + goalId + "\n");
+            buffer.append("Goal Minutes: " + goalMinutes + "\n");
+            buffer.append("Goal Reached: " + goalReached + "\n");
         }
 
         showMessage("Data", buffer.toString());
     }
 
-    private Date stringToDate(String string) {
-        DateFormat format = DateFormat.getDateInstance();
-        Date date = new Date();
-
-        try {
-            date = format.parse(string);
-        } catch (Exception e) {
-            Log.e("Date parse error", e.toString());
-        }
-
-        return date;
-    }
 
     private void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

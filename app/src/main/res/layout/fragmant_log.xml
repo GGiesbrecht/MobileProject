@@ -109,9 +109,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="677dp"
-        android:layout_marginEnd="322dp"
+        android:layout_marginStart="156dp"
+        android:layout_marginTop="598dp"
+        android:layout_marginEnd="188dp"
         android:text="Show" />
 
     <androidx.cardview.widget.CardView

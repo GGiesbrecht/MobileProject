@@ -38,13 +38,14 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.fragmentContainer, new LogFragment()).commit();
 
-        createDay();
+        initializeDay();
     }
 
-    private void createDay() {
-
+    private void initializeDay() {
+        if (!dbHelper.currentDayExists()) {
+            logDay(0);
+        }
     }
-
 
     @Override
     public void sendHoursToActivity(int hours, int minutes) {
@@ -53,11 +54,11 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
         logDay(timeInMinutes);
     }
 
-    @Override
-    public void sendGoalToActivity(int goalHours) {
-        int goalMinutes = goalHours * 60;
-        logGoal(goalMinutes);
-    }
+//    @Override
+//    public void sendGoalToActivity(int goalHours) {
+//        int goalMinutes = goalHours * 60;
+//        logGoal(goalMinutes);
+//    }
 
     public void logDay(int timeInMinutes) {
         boolean isInserted = dbHelper.insertUpdateDay(timeInMinutes, System.currentTimeMillis());
@@ -68,17 +69,17 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
             Toast.LENGTH_SHORT).show();
     }
 
-    public void logGoal(int goalInMinutes) {
-        boolean isInserted = dbHelper.insertUpdateGoal(goalInMinutes);
-
-        Toast.makeText(MainActivity.this, isInserted
-                ? "Goal inserted"
-                : "Goal not inserted",
-            Toast.LENGTH_SHORT).show();
-    }
+//    public void logGoal(int goalInMinutes) {
+//        boolean isInserted = dbHelper.insertUpdateGoal(goalInMinutes);
+//
+//        Toast.makeText(MainActivity.this, isInserted
+//                ? "Goal inserted"
+//                : "Goal not inserted",
+//            Toast.LENGTH_SHORT).show();
+//    }
 
     private void showData() {
-        Cursor cursor = dbHelper.getWeekData();
+        Cursor cursor = dbHelper.getDayData();
 
         if (cursor.getCount() == 0) {
             showMessage("Error", "Nothing found");
