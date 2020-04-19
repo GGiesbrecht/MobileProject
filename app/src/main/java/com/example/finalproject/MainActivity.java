@@ -37,24 +37,73 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
 
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.fragmentContainer, new LogFragment()).commit();
+
+        createDay();
+    }
+
+    private void createDay() {
+
     }
 
 
     @Override
-    public void sendToActivity(int hours, int minutes) {
+    public void sendHoursToActivity(int hours, int minutes) {
         int timeInMinutes = (hours * 60) + minutes;
 
-        logTime(timeInMinutes);
+        logDay(timeInMinutes);
     }
 
-    public void logTime(int timeInMinutes) {
-        boolean isInserted = dbHelper.insert(timeInMinutes, System.currentTimeMillis());
+    @Override
+    public void sendGoalToActivity(int goalHours) {
+        int goalMinutes = goalHours * 60;
+        logGoal(goalMinutes);
+    }
+
+    public void logDay(int timeInMinutes) {
+        boolean isInserted = dbHelper.insertUpdateDay(timeInMinutes, System.currentTimeMillis());
 
         Toast.makeText(MainActivity.this, isInserted
                 ? "Data inserted"
                 : "Data not inserted",
             Toast.LENGTH_SHORT).show();
     }
+
+    public void logGoal(int goalInMinutes) {
+        boolean isInserted = dbHelper.insertUpdateGoal(goalInMinutes);
+
+        Toast.makeText(MainActivity.this, isInserted
+                ? "Goal inserted"
+                : "Goal not inserted",
+            Toast.LENGTH_SHORT).show();
+    }
+
+    private void showData() {
+        Cursor cursor = dbHelper.getWeekData();
+
+        if (cursor.getCount() == 0) {
+            showMessage("Error", "Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (cursor.moveToNext()) {
+            buffer.append("ID: " + cursor.getString(0) + "\n");
+            buffer.append("Hours: " + cursor.getString(1) + "\n");
+            buffer.append("Minutes: " + cursor.getString(2) + "\n");
+            buffer.append("Date: " + cursor.getString(3) + "\n");
+        }
+
+        showMessage("Data", buffer.toString());
+    }
+
+    public void showMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
+    }
+
 
     private void setupBottomNav() {
         bottomNav = (BottomNavigationView) findViewById(R.id.bottomNav);
@@ -97,33 +146,6 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
             .replace(R.id.fragmentContainer, new GraphFragment())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .commit();
-    }
-
-    private void showData() {
-        Cursor cursor = dbHelper.getWeekData();
-
-        if (cursor.getCount() == 0) {
-            showMessage("Error", "Nothing found");
-            return;
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        while (cursor.moveToNext()) {
-            buffer.append("ID: " + cursor.getString(0) + "\n");
-            buffer.append("Hours: " + cursor.getString(1) + "\n");
-            buffer.append("Minutes: " + cursor.getString(2) + "\n");
-            buffer.append("Date: " + cursor.getString(3) + "\n");
-        }
-
-        showMessage("Data", buffer.toString());
-    }
-
-    public void showMessage(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
     }
 
     @Override

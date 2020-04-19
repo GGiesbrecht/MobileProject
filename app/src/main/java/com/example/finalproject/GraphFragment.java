@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class GraphFragment extends Fragment {
@@ -45,7 +46,7 @@ public class GraphFragment extends Fragment {
         webViewSettings.setLoadWithOverviewMode(true);
         webViewSettings.setUseWideViewPort(true);
         webView.setWebViewClient(new WebViewClient());
-        loadUrl();
+//        loadUrl();
     }
 
     private void setTextViews() {
@@ -59,14 +60,20 @@ public class GraphFragment extends Fragment {
         tvWeek.setText(String.format(Locale.getDefault(), "%02d - %02d", weekStart, weekEnd));
     }
 
-    private void loadUrl() {
+    private void loadUrl(List<String> loggedHours, List<String> goalHours) {
+        String hoursString = android.text.TextUtils.join(",", loggedHours);
+        String goalsString = android.text.TextUtils.join(",", goalHours);
         webView.loadUrl(
             "https://quickchart.io/chart?w=300&h=300&f=png&bkg=white&c={" +
                 "type:%27bar%27,data:{" +
                     "labels:['Mon','Tue','Wed','Thu','Fri', 'Sat', 'Sun']," +
                     "datasets:[{" +
                         "label:%27Hours Worked%27," +
-                        "data:[1.5,2, ,3,4,1,2]" +
+                        "data:[" + hoursString + "]" +
+                    "}," +
+                    "{" +
+                        "label:%27Goal%27," +
+                        "data:[" + goalsString + "]" +
                     "}" +
                 "]" +
             "}" +

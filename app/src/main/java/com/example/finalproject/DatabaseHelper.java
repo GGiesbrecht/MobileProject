@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Table definitions
     private static final String DAY = "day";
+    private static final String GOAL = "goal";
     private static final String WEEK = "week";
     private static final String YEAR = "year";
 
@@ -31,9 +32,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String WEEK_ID = "week_id";
     private static final String START_DATE = "start_date";
     private static final String END_DATE = "end_date";
+    private static final String DAY_OF_YEAR = "day_of_year";
+    private static final String GOAL_ID = "goal_id";
+    private static final String DAY_ID = "day_id";
+
     private static final String REACHED = "reached";
-
-
     private static final String DATE = "date";
 
 
@@ -43,18 +46,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             MINUTES + " INTEGER, " +
             DATE + " INTEGER, " +
-            "goalId INTEGER, " +
+            YEAR + " INTEGER, " +
+            DAY_OF_YEAR + " INTEGER, " +
+            GOAL_ID + " INTEGER, " +
             "FOREIGN KEY(goalId) REFERENCES goal(id)" +
         ");";
 
     private static final String CREATE_GOALS =
-        "CREATE TABLE goal (" +
+        "CREATE TABLE " + GOAL + " (" +
             ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             MINUTES + " INTEGER, " +
-            REACHED + " BOOLEAN, " +
-            "dayId INTEGER, " +
+            REACHED + " INTEGER DEFAULT 0, " +
+            DAY_ID + " INTEGER, " +
             "FOREIGN KEY(dayId) REFERENCES day(id)" +
-            ");";
+        ");";
 
 
     // Create table WEEK
@@ -106,14 +111,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Insert values using content values
-    public boolean insert(int timeInMinutes, long dateTime) {
+    public boolean insertUpdateDay(int timeInMinutes, long dateTime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues insertValues = new ContentValues();
 
-        insertValues.put(MINUTES_WORKED, timeInMinutes);
+        insertValues.put(MINUTES, timeInMinutes);
         insertValues.put(DATE, dateTime);
 
         long result = db.insert(DAY, null, insertValues);
+        return result != -1;
+    }
+
+    private boolean dayExists(long dateTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.query(DAY,	//The name of the table to query
+            String[] {},				//The columns to return
+            null,					//The columns for the where clause
+            null,					//The values for the where clause
+            null,					//Group the rows
+            null,					//Filter the row groups
+            null);					//The sort order
+    }
+
+    public boolean insertUpdateGoal(int goalInMinutes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues insertValues = new ContentValues();
+
+        insertValues.put(MINUTES, goalInMinutes);
+
+        long result = db.insert(GOAL, null, insertValues);
         return result != -1;
     }
 

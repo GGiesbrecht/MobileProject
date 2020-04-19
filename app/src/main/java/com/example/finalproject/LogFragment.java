@@ -3,6 +3,7 @@ package com.example.finalproject;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,8 @@ public class LogFragment extends Fragment {
     private DatabaseHelper dbHelper;
 
     public interface LogFragmentListener {
-        void sendToActivity(int hours, int minutes);
+        void sendHoursToActivity(int hours, int minutes);
+        void sendGoalToActivity(int goalHours);
     }
 
     @Nullable
@@ -44,13 +46,18 @@ public class LogFragment extends Fragment {
         spGoal = (Spinner) v.findViewById(R.id.spGoal);
 
         setupSpinners(v);
+        setupListeners();
 
+        return v;
+    }
+
+    private void setupListeners() {
         btnLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int hours = Integer.parseInt(spHours.getSelectedItem().toString());
                 int minutes = Integer.parseInt(spMinutes.getSelectedItem().toString());
-                listener.sendToActivity(hours, minutes);
+                listener.sendHoursToActivity(hours, minutes);
             }
         });
 
@@ -61,7 +68,16 @@ public class LogFragment extends Fragment {
             }
         });
 
-        return v;
+        spGoal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int hours = Integer.parseInt(spGoal.getSelectedItem().toString());
+                listener.sendGoalToActivity(hours);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
     }
 
     private void showData() {
@@ -74,22 +90,28 @@ public class LogFragment extends Fragment {
 
         StringBuffer buffer = new StringBuffer();
         while (cursor.moveToNext()) {
+            String stringDate = cursor.getString(2);
+            Date date = stringToDate(stringDate);
+
             buffer.append("ID: " + cursor.getString(0) + "\n");
             buffer.append("Time in Minutes: " + cursor.getString(1) + "\n");
-
-            String stringDate = cursor.getString(2);
-//            int intDate = Integer.parseInt(stringDate);
-            DateFormat format = DateFormat.getDateInstance();
-
-            Date date = new Date();
-            try {
-                date = format.parse(stringDate);
-            } catch (Exception ignored) {}
-
             buffer.append("Date: " + date + "\n");
         }
 
         showMessage("Data", buffer.toString());
+    }
+
+    private Date stringToDate(String string) {
+        DateFormat format = DateFormat.getDateInstance();
+        Date date = new Date();
+
+        try {
+            date = format.parse(string);
+        } catch (Exception e) {
+            Log.e("Date parse error", e.toString());
+        }
+
+        return date;
     }
 
     private void showMessage(String title, String message) {
@@ -122,16 +144,6 @@ public class LogFragment extends Fragment {
         spHours.setAdapter(hoursAdapter);
         spGoal.setAdapter(hoursAdapter);
         spMinutes.setAdapter(minutesAdapter);
-
-        spGoal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
-        });
     }
 
     @Override
