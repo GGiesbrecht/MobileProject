@@ -22,22 +22,20 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
     DatabaseHelper dbHelper;
     Boolean curFragIsLog;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         curFragIsLog = true;
+        dbHelper = new DatabaseHelper(this);
 
         toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
 
-        dbHelper = new DatabaseHelper(this);
-        setupBottomNav();
-
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.fragmentContainer, new LogFragment()).commit();
 
+        setupBottomNav();
         initializeDay();
     }
 

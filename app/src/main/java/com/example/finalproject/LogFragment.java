@@ -119,6 +119,25 @@ public class LogFragment extends Fragment {
         spHours.setAdapter(hoursAdapter);
         spGoal.setAdapter(hoursAdapter);
         spMinutes.setAdapter(minutesAdapter);
+
+        setSelectedItems();
+    }
+
+    private void setSelectedItems() {
+        Cursor c = dbHelper.getCurrentDay();
+        if (c.getCount() != 0) {
+            c.moveToFirst();
+            String minutesString = c.getString(0);
+            String goalMinutesString = c.getString(1);
+
+            int hours = Integer.parseInt(minutesString) / 60;
+            int minutes = Integer.parseInt(minutesString) % 60;
+            int goalHours = Integer.parseInt(goalMinutesString) / 60;
+
+            spHours.setSelection(hours, true);
+            spMinutes.setSelection(minutes, true);
+            spGoal.setSelection(goalHours, true);
+        }
     }
 
     @Override

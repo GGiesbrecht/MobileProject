@@ -90,17 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean currentDayExists() {
-        Calendar calendar = Calendar.getInstance();
-        int currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-        int currentYear = calendar.get(Calendar.YEAR);
-
-        Cursor c = db.query(
-            DAY,
-            new String[]{YEAR, DAY_OF_YEAR},
-            "year = " + currentYear + " AND " +
-                "day_of_year = " + currentDayOfYear,
-            null, null, null, null
-        );
+        Cursor c = getCurrentDay();
 
         boolean dayExists = false;
         if (c.getCount() != 0) {
@@ -109,6 +99,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
 
         return dayExists;
+    }
+
+    public Cursor getCurrentDay() {
+        Calendar calendar = Calendar.getInstance();
+        int currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        return db.query(
+            DAY,
+            new String[]{MINUTES, GOAL_MINUTES},
+            "year = " + currentYear + " AND " +
+                "day_of_year = " + currentDayOfYear,
+            null, null, null, null
+        );
     }
 
     public Cursor getAllData() {
