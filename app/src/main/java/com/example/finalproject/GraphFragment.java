@@ -1,5 +1,7 @@
 package com.example.finalproject;
 
+import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -22,14 +28,18 @@ import java.util.Locale;
 public class GraphFragment extends Fragment {
     private TextView tvYear, tvMonth, tvWeek;
     private WebView webView;
+    private DatabaseHelper dbHelper;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragmant_graph, container, false);
+        dbHelper = new DatabaseHelper(getActivity());
+
         assignViews(v);
         setTextViews();
         setupWebView();
+
         return v;
     }
 
@@ -40,24 +50,51 @@ public class GraphFragment extends Fragment {
         tvWeek = v.findViewById(R.id.tvWeek);
     }
 
+    private void setTextViews() {
+        String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+        String month = DateUtil.getMonthString(Calendar.getInstance().get(Calendar.MONTH));
+        int weekStart = DateUtil.getMondayOfWeek().getDayOfMonth();
+        int weekEnd = DateUtil.getSundayOfWeek().getDayOfMonth();
+
+        tvMonth.setText(month);
+        tvYear.setText(year);
+        tvWeek.setText(String.format(Locale.getDefault(), "%02d - %02d", weekStart, weekEnd));
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
     private void setupWebView() {
         WebSettings webViewSettings = webView.getSettings();
         webViewSettings.setJavaScriptEnabled(true);
         webViewSettings.setLoadWithOverviewMode(true);
         webViewSettings.setUseWideViewPort(true);
         webView.setWebViewClient(new WebViewClient());
-//        loadUrl();
+
+        List<String> loggedHours = getLoggedHours();
+        List<String> goalHours = getGoalHours();
+        loadUrl(loggedHours, goalHours);
     }
 
-    private void setTextViews() {
-        String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-        String month = getMonthString(Calendar.getInstance().get(Calendar.MONTH));
-        int weekStart = getMonday();
-        int weekEnd = getSunday();
+    private List<String> getLoggedHours() {
+        Cursor c = dbHelper.getWeekData();
+        List<String> hoursList = new ArrayList<>(Arrays.asList("0", "0", "0", "0", "0", "0", "0"));
 
-        tvMonth.setText(month);
-        tvYear.setText(year);
-        tvWeek.setText(String.format(Locale.getDefault(), "%02d - %02d", weekStart, weekEnd));
+        LocalDate mondayOfWeek = DateUtil.getMondayOfWeek();
+
+        while (c.moveToNext()) {
+            String dayId = c.getString(0);
+            String minutes = c.getString(1);
+            String goalMinutes = c.getString(2);
+            String dateString = c.getString(3);
+            String year = c.getString(4);
+            String day_of_year = c.getString(5);
+
+            LocalDate date = Instant.ofEpochMilli(Long.parseLong(dateString)).atZone(ZoneId.systemDefault()).toLocalDate();
+
+        }
+    }
+
+    private List<String> getGoalHours() {
+
     }
 
     private void loadUrl(List<String> loggedHours, List<String> goalHours) {
@@ -81,68 +118,4 @@ public class GraphFragment extends Fragment {
         );
     }
 
-    private int getMonday() {
-        LocalDate today = LocalDate.now();
-        LocalDate monday = today;
-
-        while (monday.getDayOfWeek() != DayOfWeek.MONDAY) {
-            monday = monday.minusDays(1);
-        }
-
-        return monday.getDayOfMonth();
-    }
-
-    private int getSunday() {
-        LocalDate today = LocalDate.now();
-        LocalDate sunday = today;
-
-        while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY) {
-            sunday = sunday.plusDays(1);
-        }
-
-        return sunday.getDayOfMonth();
-    }
-
-    private String getMonthString(int month) {
-        String monthString = "";
-        switch (month) {
-            case 0:
-                monthString = "January";
-                break;
-            case 1:
-                monthString = "February";
-                break;
-            case 2:
-                monthString = "March";
-                break;
-            case 3:
-                monthString = "April";
-                break;
-            case 4:
-                monthString = "May";
-                break;
-            case 5:
-                monthString = "June";
-                break;
-            case 6:
-                monthString = "July";
-                break;
-            case 7:
-                monthString = "August";
-                break;
-            case 8:
-                monthString = "September";
-                break;
-            case 9:
-                monthString = "October";
-                break;
-            case 10:
-                monthString = "November";
-                break;
-            case 11:
-                monthString = "December";
-                break;
-        }
-        return monthString;
-    }
 }

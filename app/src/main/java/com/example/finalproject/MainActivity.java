@@ -43,25 +43,20 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
 
     private void initializeDay() {
         if (!dbHelper.currentDayExists()) {
-            logDay(0);
+            dbHelper.insertBlankDay();
         }
     }
 
     @Override
-    public void sendHoursToActivity(int hours, int minutes) {
+    public void sendHoursToActivity(int hours, int minutes, int goalHours) {
         int timeInMinutes = (hours * 60) + minutes;
+        int goalInMinutes = goalHours * 60;
 
-        logDay(timeInMinutes);
+        logDay(timeInMinutes, goalInMinutes);
     }
 
-//    @Override
-//    public void sendGoalToActivity(int goalHours) {
-//        int goalMinutes = goalHours * 60;
-//        logGoal(goalMinutes);
-//    }
-
-    public void logDay(int timeInMinutes) {
-        boolean isInserted = dbHelper.insertUpdateDay(timeInMinutes, System.currentTimeMillis());
+    public void logDay(int timeInMinutes, int goalInMinutes) {
+        boolean isInserted = dbHelper.updateDay(timeInMinutes, goalInMinutes);
 
         Toast.makeText(MainActivity.this, isInserted
                 ? "Data inserted"
@@ -69,17 +64,8 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
             Toast.LENGTH_SHORT).show();
     }
 
-//    public void logGoal(int goalInMinutes) {
-//        boolean isInserted = dbHelper.insertUpdateGoal(goalInMinutes);
-//
-//        Toast.makeText(MainActivity.this, isInserted
-//                ? "Goal inserted"
-//                : "Goal not inserted",
-//            Toast.LENGTH_SHORT).show();
-//    }
-
     private void showData() {
-        Cursor cursor = dbHelper.getDayData();
+        Cursor cursor = dbHelper.getAllData();
 
         if (cursor.getCount() == 0) {
             showMessage("Error", "Nothing found");
@@ -104,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
         builder.setMessage(message);
         builder.show();
     }
-
 
     private void setupBottomNav() {
         bottomNav = (BottomNavigationView) findViewById(R.id.bottomNav);

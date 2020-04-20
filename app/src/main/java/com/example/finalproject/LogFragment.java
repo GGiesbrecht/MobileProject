@@ -3,11 +3,9 @@ package com.example.finalproject;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -17,9 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -30,8 +25,7 @@ public class LogFragment extends Fragment {
     private DatabaseHelper dbHelper;
 
     public interface LogFragmentListener {
-        void sendHoursToActivity(int hours, int minutes);
-//        void sendGoalToActivity(int goalHours);
+        void sendHoursToActivity(int hours, int minutes, int goalHours);
     }
 
     @Nullable
@@ -57,7 +51,8 @@ public class LogFragment extends Fragment {
             public void onClick(View v) {
                 int hours = Integer.parseInt(spHours.getSelectedItem().toString());
                 int minutes = Integer.parseInt(spMinutes.getSelectedItem().toString());
-                listener.sendHoursToActivity(hours, minutes);
+                int goalHours = Integer.parseInt(spGoal.getSelectedItem().toString());
+                listener.sendHoursToActivity(hours, minutes, goalHours);
             }
         });
 
@@ -67,49 +62,30 @@ public class LogFragment extends Fragment {
                 showData();
             }
         });
-
-        spGoal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int hours = Integer.parseInt(spGoal.getSelectedItem().toString());
-                listener.sendGoalToActivity(hours);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
-        });
     }
 
     private void showData() {
-        Cursor dayCursor = dbHelper.getDayData();
-        Cursor goalCursor = dbHelper.getGoalData();
+        Cursor c = dbHelper.getAllData();
 
-        if (dayCursor.getCount() == 0 && goalCursor.getCount() == 0) {
-            showMessage("Error", "Nothing found");
+        if (c.getCount() == 0) {
+            showMessage("Empty", "Nothing found");
             return;
         }
 
         StringBuffer buffer = new StringBuffer();
+        while (c.moveToNext()) {
 
-        while (dayCursor.moveToNext()) {
-            String stringDate = dayCursor.getString(2);
-            Date date = dbHelper.stringToDate(stringDate);
-            String dayId = dayCursor.getString(0);
-            String minutes = dayCursor.getString(1);
+            String dayId = c.getString(0);
+            String minutes = c.getString(1);
+            String goalMinutes = c.getString(2);
+            String stringDate = c.getString(3);
+
+            Date date = DateUtil.stringToDate(stringDate);
 
             buffer.append("Day ID: " + dayId + "\n");
-            buffer.append("Time in Minutes: " + minutes + "\n");
+            buffer.append("Time Worked: " + minutes + "\n");
+            buffer.append("Goal: " + goalMinutes + "\n");
             buffer.append("Date: " + date + "\n");
-        }
-
-        while (goalCursor.moveToNext()) {
-            String goalId = goalCursor.getString(0);
-            String goalMinutes = goalCursor.getString(1);
-            String goalReached = goalCursor.getString(2);
-
-            buffer.append("Goal ID: " + goalId + "\n");
-            buffer.append("Goal Minutes: " + goalMinutes + "\n");
-            buffer.append("Goal Reached: " + goalReached + "\n");
         }
 
         showMessage("Data", buffer.toString());
