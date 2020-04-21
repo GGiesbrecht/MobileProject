@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +18,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements LogFragment.LogFragmentListener {
+    private final int STANDARD_REQUEST_CODE = 222;
+
     Toolbar toolbar;
     BottomNavigationView bottomNav;
     DatabaseHelper dbHelper;
@@ -137,5 +140,17 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.appbar, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivityForResult(intent, STANDARD_REQUEST_CODE);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

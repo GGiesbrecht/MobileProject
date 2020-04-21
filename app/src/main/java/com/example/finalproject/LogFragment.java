@@ -12,16 +12,14 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class LogFragment extends Fragment {
     private LogFragmentListener listener;
     private Spinner spHours, spMinutes, spGoal;
-    private Button btnLog, btnShow;
+    private Button btnLog;
     private DatabaseHelper dbHelper;
 
     public interface LogFragmentListener {
@@ -33,7 +31,6 @@ public class LogFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragmant_log, container, false);
 
-        btnShow = (Button) v.findViewById(R.id.btnShow);
         btnLog = (Button) v.findViewById(R.id.btnLogHours);
         spHours = (Spinner) v.findViewById(R.id.spHours);
         spMinutes = (Spinner) v.findViewById(R.id.spMinutes);
@@ -55,46 +52,6 @@ public class LogFragment extends Fragment {
                 listener.sendHoursToActivity(hours, minutes, goalHours);
             }
         });
-
-        btnShow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showData();
-            }
-        });
-    }
-
-    private void showData() {
-        Cursor c = dbHelper.getAllData();
-
-        if (c.getCount() == 0) {
-            showMessage("Empty", "Nothing found");
-            return;
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        while (c.moveToNext()) {
-            String dayId = c.getString(0);
-            String minutes = c.getString(1);
-            String goalMinutes = c.getString(2);
-            String stringDate = c.getString(3);
-
-            Date date = DateUtil.stringToDate(stringDate);
-
-            buffer.append("Day ID: " + dayId + "\n")
-                .append("Time Worked: " + minutes + "\n")
-                .append("Goal: " + goalMinutes + "\n")
-                .append("Date: " + date + "\n");
-        }
-        showMessage("Data", buffer.toString());
-    }
-
-    private void showMessage(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
     }
 
     private void setupSpinners(View v) {

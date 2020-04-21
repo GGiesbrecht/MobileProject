@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Settings">
+    android:background="#e6e6e6"
+    tools:context=".SettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/settingsToolbar"
@@ -37,11 +38,12 @@
                 android:layout_alignParentStart="false"
                 android:layout_alignParentTop="false"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="60dp"
                 android:text="Chart Type"
                 android:textSize="30sp" />
 
             <RadioGroup
+                android:id="@+id/radioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvGraphType"
@@ -50,18 +52,20 @@
                 android:layout_marginEnd="10dp">
 
                 <RadioButton
-                    android:id="@+id/radioCanada"
+                    android:id="@+id/radioBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:onClick="radioButtonClick"
                     android:text="Bar Graph"
                     android:textSize="20sp" />
 
                 <RadioButton
-                    android:id="@+id/radioTech"
+                    android:id="@+id/radioLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:onClick="radioButtonClick"
                     android:text="Line Graph"
                     android:textSize="20sp" />
             </RadioGroup>
@@ -69,32 +73,48 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="41dp"
-                android:layout_marginBottom="135dp"
+                android:layout_below="@+id/radioGroup"
+                android:layout_marginTop="25dp"
+                android:layout_marginStart="20dp"
                 android:text="Day"
                 android:textSize="25sp" />
 
             <Switch
-                android:layout_width="50dp"
+                android:id="@+id/swNight"
+                android:layout_width="190dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="97dp"
-                android:layout_marginBottom="135dp"
+                android:layout_below="@+id/radioGroup"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="28dp"
+                android:paddingEnd="79dp"
                 android:scaleX="1.5"
-                android:scaleY="1.5" />
+                android:scaleY="1.5"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="173dp"
-                android:layout_marginBottom="135dp"
+                android:layout_below="@+id/radioGroup"
+                android:layout_marginTop="25dp"
+                android:layout_marginStart="150dp"
                 android:text="Night"
                 android:textSize="25sp" />
+
+            <Button
+                android:id="@+id/btnAccept"
+                android:layout_width="184dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="41dp"
+                android:layout_marginBottom="37dp"
+                android:background="@drawable/rounded_button_blue"
+                android:elevation="5dp"
+                android:outlineProvider="bounds"
+                android:stateListAnimator="@null"
+                android:text="Accept"
+                android:textColor="#ffffff"
+                android:textSize="20dp"
+                android:translationZ="1dp" />
 
 
         </RelativeLayout>

@@ -43,7 +43,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         db = this.getWritableDatabase();
-//        onCreate(this.getReadableDatabase());
     }
 
     @Override
@@ -91,13 +90,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean currentDayExists() {
         Cursor c = getCurrentDay();
-
         boolean dayExists = false;
+
         if (c.getCount() != 0) {
             dayExists = true;
         }
         c.close();
-
         return dayExists;
     }
 
