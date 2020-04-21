@@ -1,6 +1,5 @@
 package com.example.finalproject;
 
-import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,13 +16,14 @@ import androidx.fragment.app.Fragment;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class GraphFragment extends Fragment {
     private TextView tvYear, tvMonth, tvWeek;
@@ -61,7 +61,6 @@ public class GraphFragment extends Fragment {
         tvWeek.setText(String.format(Locale.getDefault(), "%02d - %02d", weekStart, weekEnd));
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     private void setupWebView() {
         WebSettings webViewSettings = webView.getSettings();
         webViewSettings.setJavaScriptEnabled(true);
@@ -69,32 +68,41 @@ public class GraphFragment extends Fragment {
         webViewSettings.setUseWideViewPort(true);
         webView.setWebViewClient(new WebViewClient());
 
-        List<String> loggedHours = getLoggedHours();
-        List<String> goalHours = getGoalHours();
+        Map<String,List<String>> map = getHoursMap();
+        List<String> loggedHours = map.get("hoursList");
+        List<String> goalHours = map.get("goalsList");
+
         loadUrl(loggedHours, goalHours);
     }
 
-    private List<String> getLoggedHours() {
-        Cursor c = dbHelper.getWeekData();
+    private Map<String,List<String>> getHoursMap() {
         List<String> hoursList = new ArrayList<>(Arrays.asList("0", "0", "0", "0", "0", "0", "0"));
+        List<String> goalsList = new ArrayList<>(Arrays.asList("0", "0", "0", "0", "0", "0", "0"));
+        LocalDate monday = DateUtil.getMondayOfWeek();
 
-        LocalDate mondayOfWeek = DateUtil.getMondayOfWeek();
-
+        Cursor c = dbHelper.getWeekData();
         while (c.moveToNext()) {
-            String dayId = c.getString(0);
             String minutes = c.getString(1);
             String goalMinutes = c.getString(2);
             String dateString = c.getString(3);
-            String year = c.getString(4);
-            String day_of_year = c.getString(5);
 
-            LocalDate date = Instant.ofEpochMilli(Long.parseLong(dateString)).atZone(ZoneId.systemDefault()).toLocalDate();
+            double hours = Double.parseDouble(minutes) / 60;
+            double goalHours = Double.parseDouble(goalMinutes) / 60;
+            LocalDate date = Instant.ofEpochMilli(Long.parseLong(dateString))
+                .atZone(ZoneId.systemDefault()).toLocalDate();
 
+            for (int i = 0; i < 7; i++) {
+                if (date.getDayOfYear() == monday.getDayOfYear() + i) {
+                    hoursList.set(i, String.valueOf(hours));
+                    goalsList.set(i, String.valueOf(goalHours));
+                }
+            }
         }
-    }
 
-    private List<String> getGoalHours() {
-
+        Map<String,List<String>> map = new HashMap<>();
+        map.put("hoursList", hoursList);
+        map.put("goalsList", goalsList);
+        return map;
     }
 
     private void loadUrl(List<String> loggedHours, List<String> goalHours) {
@@ -106,7 +114,7 @@ public class GraphFragment extends Fragment {
                     "labels:['Mon','Tue','Wed','Thu','Fri', 'Sat', 'Sun']," +
                     "datasets:[{" +
                         "label:%27Hours Worked%27," +
-                        "data:[" + hoursString + "]" +
+                        "data:[" + hoursString + "] " +
                     "}," +
                     "{" +
                         "label:%27Goal%27," +

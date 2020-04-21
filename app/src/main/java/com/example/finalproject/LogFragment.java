@@ -74,7 +74,6 @@ public class LogFragment extends Fragment {
 
         StringBuffer buffer = new StringBuffer();
         while (c.moveToNext()) {
-
             String dayId = c.getString(0);
             String minutes = c.getString(1);
             String goalMinutes = c.getString(2);
@@ -82,15 +81,13 @@ public class LogFragment extends Fragment {
 
             Date date = DateUtil.stringToDate(stringDate);
 
-            buffer.append("Day ID: " + dayId + "\n");
-            buffer.append("Time Worked: " + minutes + "\n");
-            buffer.append("Goal: " + goalMinutes + "\n");
-            buffer.append("Date: " + date + "\n");
+            buffer.append("Day ID: " + dayId + "\n")
+                .append("Time Worked: " + minutes + "\n")
+                .append("Goal: " + goalMinutes + "\n")
+                .append("Date: " + date + "\n");
         }
-
         showMessage("Data", buffer.toString());
     }
-
 
     private void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
