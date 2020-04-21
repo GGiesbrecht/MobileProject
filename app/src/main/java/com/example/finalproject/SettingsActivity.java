@@ -11,14 +11,16 @@ import android.widget.RadioButton;
 import android.widget.Switch;
 
 public class SettingsActivity extends AppCompatActivity {
-    private final String BAR = "bar";
-    private final String LINE = "line";
+    private final String BLUE = "33d6ff";
+    private final String GREEN = "00ff00";
+    private final String GOLD = "CDAA35";
+    private final String PURPLE = "cc66ff";
     private final String NIGHT_MODE = "nightMode";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor prefEditor;
     private Button btnAccept;
-    private RadioButton radioBar, radioLine;
+    private RadioButton radioBlue, radioGreen, radioGold, radioPurple;
     private Switch swNight;
 
     @Override
@@ -34,10 +36,19 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void assignControls() {
         btnAccept = (Button) findViewById(R.id.btnAccept);
-        radioBar = (RadioButton) findViewById(R.id.radioBar);
-        radioLine = (RadioButton) findViewById(R.id.radioLine);
-        swNight = (Switch) findViewById(R.id.swNight);
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
+        radioBlue = (RadioButton) findViewById(R.id.radBlue);
+        radioGreen = (RadioButton) findViewById(R.id.radGreen);
+        radioGold = (RadioButton) findViewById(R.id.radGold);
+        radioPurple = (RadioButton) findViewById(R.id.radPurple);
+
+        swNight = (Switch) findViewById(R.id.swNight);
         swNight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -49,19 +60,12 @@ public class SettingsActivity extends AppCompatActivity {
                 prefEditor.commit();
             }
         });
-
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setSelectedFeedType();
+        setSelectedColours();
         setSwitchIsChecked();
     }
 
@@ -69,31 +73,57 @@ public class SettingsActivity extends AppCompatActivity {
        swNight.setChecked(sharedPreferences.getBoolean(NIGHT_MODE, false));
     }
 
-    private void setSelectedFeedType() {
-        switch (sharedPreferences.getString("graphType", BAR)) {
-            case LINE:
-                radioLine.setChecked(true);
+    private void setSelectedColours() {
+        switch (sharedPreferences.getString("hourColour", BLUE)) {
+            case GREEN:
+                radioGreen.setChecked(true);
                 break;
             default:
-                radioBar.setChecked(true);
+                radioBlue.setChecked(true);
+                break;
+        }
+
+        switch (sharedPreferences.getString("goalColour", GOLD)) {
+            case PURPLE:
+                radioPurple.setChecked(true);
+                break;
+            default:
+                radioGold.setChecked(true);
                 break;
         }
     }
 
-    public void radioButtonClick(View v) {
+    public void hoursBarColour(View v) {
         boolean checked = ((RadioButton) v).isChecked();
         switch (v.getId()) {
-            case R.id.radioBar:
+            case R.id.radBlue:
                 if (checked) {
-                    prefEditor.putString("graphType", BAR);
+                    prefEditor.putString("hourColour", BLUE);
                 }
                 break;
-            case R.id.radioLine:
+            case R.id.radGreen:
                 if (checked) {
-                    prefEditor.putString("graphType", LINE);
+                    prefEditor.putString("hourColour", GREEN);
                 }
                 break;
         }
         prefEditor.commit();
     }
+    public void goalsBarColour(View v) {
+        boolean checked = ((RadioButton) v).isChecked();
+        switch (v.getId()) {
+            case R.id.radGold:
+                if (checked) {
+                    prefEditor.putString("goalColour", GOLD);
+                }
+                break;
+            case R.id.radPurple:
+                if (checked) {
+                    prefEditor.putString("goalColour", PURPLE);
+                }
+                break;
+        }
+        prefEditor.commit();
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.example.finalproject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +32,7 @@ public class GraphFragment extends Fragment {
     private TextView tvYear, tvMonth, tvWeek;
     private WebView webView;
     private DatabaseHelper dbHelper;
+    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -38,9 +42,15 @@ public class GraphFragment extends Fragment {
 
         assignViews(v);
         setTextViews();
-        setupWebView();
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        sharedPreferences = getActivity().getSharedPreferences("settings", Context.MODE_PRIVATE);
+        setupWebView();
     }
 
     private void assignViews(View v) {
@@ -106,19 +116,28 @@ public class GraphFragment extends Fragment {
     }
 
     private void loadUrl(List<String> loggedHours, List<String> goalHours) {
-        String hoursString = android.text.TextUtils.join(",", loggedHours);
-        String goalsString = android.text.TextUtils.join(",", goalHours);
+        String hoursList = android.text.TextUtils.join(",", loggedHours);
+        String goalsList = android.text.TextUtils.join(",", goalHours);
+//        sharedPreferences = getActivity().getSharedPreferences("settings", Context.MODE_PRIVATE);
+        String hourColour = sharedPreferences.getString("hourColour", "33d6ff");
+        String goalColour = sharedPreferences.getString("goalColour", "CDAA35");
+        boolean nightMode = sharedPreferences.getBoolean("nightMode", false);
+        String backgroundColour = nightMode ? "black" : "white";
+
+
         webView.loadUrl(
-            "https://quickchart.io/chart?w=300&h=300&f=png&bkg=white&c={" +
+            "https://quickchart.io/chart?w=300&h=300&f=png&bkg="+ backgroundColour +"&c={" +
                 "type:%27bar%27,data:{" +
                     "labels:['Mon','Tue','Wed','Thu','Fri', 'Sat', 'Sun']," +
                     "datasets:[{" +
                         "label:%27Hours Worked%27," +
-                        "data:[" + hoursString + "] " +
+                        "data:["+ hoursList +"]," +
+                        "backgroundColor:%27%23"+ hourColour +"%27," +
                     "}," +
                     "{" +
                         "label:%27Goal%27," +
-                        "data:[" + goalsString + "]" +
+                        "data:["+ goalsList +"]," +
+                        "backgroundColor:%27%23"+ goalColour +"%27," +
                     "}" +
                 "]" +
             "}" +

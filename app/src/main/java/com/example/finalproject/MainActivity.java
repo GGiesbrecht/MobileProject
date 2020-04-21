@@ -1,15 +1,15 @@
 package com.example.finalproject;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -19,7 +19,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements LogFragment.LogFragmentListener {
     private final int STANDARD_REQUEST_CODE = 222;
+    public SharedPreferences sharedPreferences;
 
+    RelativeLayout mainLayout;
     Toolbar toolbar;
     BottomNavigationView bottomNav;
     DatabaseHelper dbHelper;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
         setContentView(R.layout.activity_main);
         curFragIsLog = true;
         dbHelper = new DatabaseHelper(this);
+        sharedPreferences = getSharedPreferences("settings", MODE_PRIVATE);
+        mainLayout = findViewById(R.id.mainLayout);
 
         toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
@@ -40,6 +44,12 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
 
         setupBottomNav();
         initializeDay();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sharedPreferences = getSharedPreferences("settings", MODE_PRIVATE);
     }
 
     private void initializeDay() {
@@ -63,33 +73,6 @@ public class MainActivity extends AppCompatActivity implements LogFragment.LogFr
                 ? "Data inserted"
                 : "Data not inserted",
             Toast.LENGTH_SHORT).show();
-    }
-
-    private void showData() {
-        Cursor cursor = dbHelper.getAllData();
-
-        if (cursor.getCount() == 0) {
-            showMessage("Error", "Nothing found");
-            return;
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        while (cursor.moveToNext()) {
-            buffer.append("ID: " + cursor.getString(0) + "\n");
-            buffer.append("Hours: " + cursor.getString(1) + "\n");
-            buffer.append("Minutes: " + cursor.getString(2) + "\n");
-            buffer.append("Date: " + cursor.getString(3) + "\n");
-        }
-
-        showMessage("Data", buffer.toString());
-    }
-
-    public void showMessage(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
     }
 
     private void setupBottomNav() {

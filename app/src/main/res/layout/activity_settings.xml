@@ -22,9 +22,11 @@
         android:id="@+id/cvHoursWorked"
         android:layout_width="283dp"
         android:layout_height="430dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="153dp"
+        android:layout_below="@+id/settingsToolbar"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="120dp"
         app:cardCornerRadius="6dp">
 
         <RelativeLayout
@@ -32,50 +34,90 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tvGraphType"
+                android:id="@+id/tvHours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentTop="false"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="60dp"
-                android:text="Chart Type"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="21dp"
+                android:layout_marginTop="18dp"
+                android:text="Hours Bar Colour"
                 android:textSize="30sp" />
 
             <RadioGroup
-                android:id="@+id/radioGroup"
+                android:id="@+id/rgHours"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tvGraphType"
+                android:layout_below="@+id/tvHours"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp">
 
                 <RadioButton
-                    android:id="@+id/radioBar"
+                    android:id="@+id/radBlue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:onClick="radioButtonClick"
-                    android:text="Bar Graph"
-                    android:textSize="20sp" />
+                    android:onClick="hoursBarColour"
+                    android:text="Blue"
+                    android:textSize="18sp" />
 
                 <RadioButton
-                    android:id="@+id/radioLine"
+                    android:id="@+id/radGreen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:onClick="radioButtonClick"
-                    android:text="Line Graph"
-                    android:textSize="20sp" />
+                    android:onClick="hoursBarColour"
+                    android:text="Green"
+                    android:textSize="18sp" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/tvGoals"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="21dp"
+                android:layout_marginTop="184dp"
+                android:text="Goals Bar Colour"
+                android:textSize="30sp" />
+
+            <RadioGroup
+                android:id="@+id/rgGoals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvGoals"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp">
+
+                <RadioButton
+                    android:id="@+id/radGold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="goalsBarColour"
+                    android:text="Gold"
+                    android:textSize="18sp" />
+
+                <RadioButton
+                    android:id="@+id/radPurple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="goalsBarColour"
+                    android:text="Purple"
+                    android:textSize="18sp" />
             </RadioGroup>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/radioGroup"
-                android:layout_marginTop="25dp"
-                android:layout_marginStart="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="19dp"
+                android:layout_marginBottom="130dp"
                 android:text="Day"
                 android:textSize="25sp" />
 
@@ -83,19 +125,20 @@
                 android:id="@+id/swNight"
                 android:layout_width="190dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/radioGroup"
+                android:layout_alignParentBottom="true"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="28dp"
+                android:layout_marginBottom="131dp"
                 android:paddingEnd="79dp"
                 android:scaleX="1.5"
-                android:scaleY="1.5"/>
+                android:scaleY="1.5" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/radioGroup"
-                android:layout_marginTop="25dp"
-                android:layout_marginStart="150dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="74dp"
+                android:layout_marginBottom="130dp"
                 android:text="Night"
                 android:textSize="25sp" />
 
